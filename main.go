@@ -1,19 +1,19 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func main() {
-	const (
-		p, q uint = 61, 53
-	)
-	totient := (p - 1) * (q - 1)
-	publicModulus := p * q
-	var publicKey uint = 17
+	var p, q uint
 
-	var privateKey uint = 0
-	for (privateKey*publicKey)%totient != 1 {
-		privateKey += 1
-	}
+	primes := GetPrimes(200)
+	p = primes[len(primes)-2]
+	q = primes[len(primes)-1]
+
+	k := KeyGenerator1{}
+	publicKey, privateKey := k.KeyGen(p, q)
+	publicModulus := p * q
 
 	fmt.Printf("private key: %d\n", privateKey)
 	fmt.Printf("public key: %d\n", publicKey)
@@ -24,18 +24,12 @@ func main() {
 	// public modulus: 3233
 
 	var message uint = 42
-	fmt.Printf("message: %d\n", message)
-	// Output:
-	// message: 42
-
 	r := Raiser1{}
-	encryptedMessage := r.Raise(message, publicKey, publicModulus)
-	fmt.Printf("encrypted message: %d\n", encryptedMessage)
+	encMsg, msgOut := RsaRun(r, message, publicKey, privateKey, publicModulus)
+	fmt.Printf("message: %d\n", message)
+	fmt.Printf("encrypted message: %d\n", encMsg)
+	fmt.Printf("decrypted message: %d\n", msgOut)
 	// Output:
 	// encrypted message: 2557
-
-	decryptedMessage := r.Raise(message, privateKey, publicModulus)
-	fmt.Printf("decrypted message: %d\n", decryptedMessage)
-	// Output:
 	// decrypted message: 42
 }

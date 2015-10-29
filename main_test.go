@@ -23,6 +23,10 @@ func RaiserTest(r Raiser, t *testing.T) {
 	if ans != 6 {
 		t.Error("6^4 (mod 10) should be 6, but it was", ans)
 	}
+	_, ans = RsaRun(r, 42, 17, 2753, 61*53)
+	if ans != 42 {
+		t.Error("42 was not encrypted and decrypted correctly with keys", ans)
+	}
 }
 
 func Test_Raiser1(t *testing.T) {
@@ -33,18 +37,16 @@ func Test_Raiser2(t *testing.T) {
 	RaiserTest(Raiser2{}, t)
 }
 
-func Benchmark_Raiser1(b *testing.B) {
-	r := Raiser1{}
+func RaiserBenchmark(r Raiser, k1 uint, k2 uint, mod uint, b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		ans := r.Raise(42, 17, 61*53)
-		r.Raise(ans, 2753, 61*53)
+		RsaRun(r, 42424242, k1, k2, mod)
 	}
 }
 
+func Benchmark_Raiser1(b *testing.B) {
+	RaiserBenchmark(Raiser1{}, 257, 1283585, 1488391, b)
+}
+
 func Benchmark_Raiser2(b *testing.B) {
-	r := Raiser2{}
-	for i := 0; i < b.N; i++ {
-		ans := r.Raise(42, 17, 61*53)
-		r.Raise(ans, 2753, 61*53)
-	}
+	RaiserBenchmark(Raiser2{}, 257, 1283585, 1488391, b)
 }

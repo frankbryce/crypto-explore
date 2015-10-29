@@ -7,8 +7,16 @@ impractical, but hey, I'm only just learning how the damn thing works.
 (done) OK, so these implementations are totally stupid.  Let me make a benchmark, and see how it performs.  Then, I can make an interface
 which describes the method I benchmark, then make multiple implementations and compare their benchmarks.
 
-stress test the implementation you've got... build interface for "simple" RSA and create unit tests.  Create primes, and unit test
+(done) stress test the implementation you've got... build interface for "simple" RSA and create unit tests.  Create primes, and unit test
 by encrypting and decrypting messages.  Then, those larger benchmarks should be interesting.
+(comment) not really that interesting... turns out, because I can't fit that many exponents into a uint the speedup isn't that noticable.
+          A similar strategy with a byte array would work better, I think.
 
-Once I benchmark RSA implementation, I think it'd be fun to compare that to the go package's "crypto" version... not apples to apples
-since mine uses integers but still.  Let's see if mine lives up at all.  Tomorrow will be fun :)
+Create my RsaRunner into a driver, so I don't lose the work I've done, but now that I understand how RSA works, I would like to learn more
+about the internals of "crypto"... Let's implement that version, so I can pass actual messages.
+
+Learn how to make example Go files
+
+Learn how to document Go code
+
+Learn how to build a go package, perhaps make a simple prime number package with a build script.
