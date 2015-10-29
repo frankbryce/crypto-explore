@@ -3,36 +3,39 @@ package main
 import "fmt"
 
 func main() {
-	p, q := 61, 53
+	const (
+		p, q uint = 61, 53
+	)
 	totient := (p - 1) * (q - 1)
 	publicModulus := p * q
-	publicKey := 17
+	var publicKey uint = 17
 
-	privateKey := 0
+	var privateKey uint = 0
 	for (privateKey*publicKey)%totient != 1 {
 		privateKey += 1
 	}
 
-	fmt.Printf("privateKey: %d\n", privateKey)
+	fmt.Printf("private key: %d\n", privateKey)
 	fmt.Printf("public key: %d\n", publicKey)
-	fmt.Printf("publicModulus: %d\n", publicModulus)
+	fmt.Printf("public modulus: %d\n", publicModulus)
 	// Output:
+	// private key: 2753
+	// public key: 17
+	// public modulus: 3233
 
-	message := 42
+	var message uint = 42
 	fmt.Printf("message: %d\n", message)
+	// Output:
+	// message: 42
 
-	encryptedMessage := raiseToPower(message, publicKey, publicModulus)
-	fmt.Printf("encryptedMessage: %d\n", encryptedMessage)
+	r := Raiser1{}
+	encryptedMessage := r.Raise(message, publicKey, publicModulus)
+	fmt.Printf("encrypted message: %d\n", encryptedMessage)
+	// Output:
+	// encrypted message: 2557
 
-	decryptedMessage := raiseToPower(encryptedMessage, privateKey, publicModulus)
-	fmt.Printf("decryptedMessage: %d\n", decryptedMessage)
-}
-
-func raiseToPower(a int, x int, mod int) int {
-	ans := 1
-	for i := 0; i < x; i += 1 {
-		ans *= a
-		ans %= mod
-	}
-	return ans
+	decryptedMessage := r.Raise(message, privateKey, publicModulus)
+	fmt.Printf("decrypted message: %d\n", decryptedMessage)
+	// Output:
+	// decrypted message: 42
 }
