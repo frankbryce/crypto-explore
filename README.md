@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # crypto-explore
 Understanding go's capabilities and how to use crypto in the go world.  I also want to add examples, benchmarks, and tests.
 
@@ -20,3 +21,7 @@ Learn how to make example Go files
 Learn how to document Go code
 
 Learn how to build a go package, perhaps make a simple prime number package with a build script.
+=======
+# primeSieve
+my own prime sieve
+>>>>>>> 37a9a65f55db5344c004783738969d5336f99c26

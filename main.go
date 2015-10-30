@@ -1,35 +1,55 @@
 package main
 
 import (
+	"crypto/rand"
+	"crypto/rsa"
 	"fmt"
+	"math/big"
 )
 
 func main() {
-	var p, q uint
+	//var primes []uint64 = GetPrimes(10000)
+	var p, q uint64 = uint64(104723), uint64(104729) //primes[len(primes)-2], primes[len(primes)-1]
+	var mod int64 = int64(p * q)
+	var puk, prk = int(65537), uint64(10195862609) //KeyGenerator1{}.KeyGen(p, q)
 
-	primes := GetPrimes(200)
-	p = primes[len(primes)-2]
-	q = primes[len(primes)-1]
+	fmt.Println(p, q)
+	fmt.Println(mod)
+	fmt.Println(puk, prk)
 
-	k := KeyGenerator1{}
-	publicKey, privateKey := k.KeyGen(p, q)
-	publicModulus := p * q
+	b := []byte("Hi")
+	var pub rsa.PublicKey = rsa.PublicKey{N: big.NewInt(mod), E: puk}
+	var priv rsa.PrivateKey = rsa.PrivateKey{PublicKey: pub}
+	priv.D = big.NewInt(int64(prk))
+	priv.Primes = []*big.Int{big.NewInt(int64(p)), big.NewInt(int64(q))}
 
-	fmt.Printf("private key: %d\n", privateKey)
-	fmt.Printf("public key: %d\n", publicKey)
-	fmt.Printf("public modulus: %d\n", publicModulus)
-	// Output:
-	// private key: 2753
-	// public key: 17
-	// public modulus: 3233
+	fmt.Println(len(b))
+	fmt.Printf("% x\n", b)
 
-	var message uint = 42
-	r := Raiser1{}
-	encMsg, msgOut := RsaRun(r, message, publicKey, privateKey, publicModulus)
-	fmt.Printf("message: %d\n", message)
-	fmt.Printf("encrypted message: %d\n", encMsg)
-	fmt.Printf("decrypted message: %d\n", msgOut)
-	// Output:
-	// encrypted message: 2557
-	// decrypted message: 42
+	//h := md5.New()
+	enc, erre := rsa.EncryptPKCS1v15(rand.Reader, &pub, b)
+	//h.Reset()
+	dec, errd := rsa.DecryptPKCS1v15(rand.Reader, &priv, b)
+
+	//fmt.Println(64 - 11)
+	fmt.Printf("%s\n", erre)
+	fmt.Printf("%s\n", errd)
+	fmt.Printf("% x\n", enc)
+	fmt.Printf("% x\n", dec)
 }
+
+//type myHash struct{}
+//
+//func (h myHash) Write(b []byte) (int, error) {
+//	return 0, nil
+//}
+//func (h myHash) Sum(b []byte) (out []byte) {
+//	return []byte{0}
+//}
+//func (h myHash) Reset() { return }
+//func (h myHash) Size() int {
+//	return len(h.Sum(nil))
+//}
+//func (h myHash) BlockSize() int {
+//	return 1
+//}

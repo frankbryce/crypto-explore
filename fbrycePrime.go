@@ -5,15 +5,15 @@
 package main
 
 // Send the sequence 2, 3, 4, ... to channel 'ch'.
-func generate(ch chan<- uint) {
-	for i := uint(2); ; i++ {
+func generate(ch chan<- uint64) {
+	for i := uint64(2); ; i++ {
 		ch <- i // Send 'i' to channel 'ch'.
 	}
 }
 
 // Copy the values from channel 'in' to channel 'out',
 // removing those divisible by 'prime'.
-func filter(in <-chan uint, out chan<- uint, prime uint) {
+func filter(in <-chan uint64, out chan<- uint64, prime uint64) {
 	for {
 		i := <-in // Receive value from 'in'.
 		if i%prime != 0 {
@@ -23,16 +23,20 @@ func filter(in <-chan uint, out chan<- uint, prime uint) {
 }
 
 // The prime sieve: Daisy-chain Filter processes.
-func GetPrimes(n uint) []uint {
-	ch := make(chan uint) // Create a new channel.
-	go generate(ch)       // Launch Generate goroutine.
-	primes := make([]uint, 0, n)
+func GetPrimes(n uint) []uint64 {
+	ch := make(chan uint64) // Create a new channel.
+	go generate(ch)         // Launch Generate goroutine.
+	primes := make([]uint64, 0, n)
 	for i := uint(0); i < n; i++ {
 		prime := <-ch
 		primes = append(primes, prime)
-		ch1 := make(chan uint)
+		ch1 := make(chan uint64)
 		go filter(ch, ch1, prime)
 		ch = ch1
 	}
 	return primes
+}
+
+type PrimeGetter interface {
+	GetPrimes(n uint) (primes []uint64)
 }
