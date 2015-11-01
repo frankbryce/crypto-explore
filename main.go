@@ -5,16 +5,17 @@ import (
 	"crypto/rsa"
 	"fmt"
 	"math/big"
+
+	"github.com/frankbryce/prime"
 )
 
 func main() {
-	//var primes []uint64 = GetPrimes(10000)
-	var p, q uint64 = uint64(104723), uint64(104729) //primes[len(primes)-2], primes[len(primes)-1]
-	var mod int64 = int64(p * q)
-	var puk, prk = int(65537), uint64(10195862609) //KeyGenerator1{}.KeyGen(p, q)
-
+	var primes []uint64 = prime.PrimeSieveBatch{BatchSize: 100}.GetPrimes(10000)
+	var p, q uint64 = /*uint64(104723), uint64(104729) */ primes[len(primes)-2], primes[len(primes)-1]
 	fmt.Println(p, q)
+	var mod int64 = int64(p * q)
 	fmt.Println(mod)
+	var puk, prk = /*int(65537), uint64(10195862609) */ KeyGenerator1{}.KeyGen(p, q)
 	fmt.Println(puk, prk)
 
 	b := []byte("Hi")
